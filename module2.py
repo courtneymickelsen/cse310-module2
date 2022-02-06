@@ -8,7 +8,8 @@ def main():
 class GamePicker():
     
     def __init__(self):
-        self.data = None
+        # self.data = None
+        self.data = pd.read_csv("cse310-module2/bgg_dataset.csv", skiprows=1, decimal='.')
         self.games_available = []
         self.age = 0
         self.difficulty = 0
@@ -29,31 +30,21 @@ class GamePicker():
 
     def setup(self):    
         # get input from user
-        print("Please enter the following values. If one value doesn't matter to you, leave it blank and press enter. ")
+        print("Please enter the following values: ")
         self.age = int(input("How old is the youngest person playing? "))
         self.difficulty = float(input("How difficult do you want it to be (1-10)? "))
         self.play_time = int(input("How much time do you have (in minutes)? "))
         self.player_count = int(input("How many people will be playing? "))
-        self.rating = int(input("What's the lowest rating you would be okay with (1-10)? "))
+        self.rating = float(input("What's the lowest rating you would be okay with (1-10)? "))
         print("Finding games that fit...")
         
-        self.data = pd.read_csv("cse310-module2/bgg_dataset.csv", skiprows=1, decimal='.')
         self.check_games()
 
 
     def check_games(self):
-        # for i in self.data:
-        # print(i)
-        # list = i.split(';')
-
-        # fits_age = filter(self.get_age, self.data)
-        # fits_difficulty = filter(self.get_difficulty, fits_age)
-        # fits_play_time = filter(self.get_play_time, fits_difficulty)
-        # fits_player_count = filter(self.get_player_count, fits_play_time)
-        # fits_rating = list(filter(self.get_rating, fits_player_count))
-
-        # games_possible = list(fits_rating)
-        '''maybe add it to a new file?'''
+        lalala = self.data
+        print(lalala)
+        
         for i in self.data:
             list = i.split(';')
 
@@ -78,7 +69,7 @@ class GamePicker():
     def get_difficulty(self, list):
         # list = list.split(';')
         if float(list[self.difficulty_i]) <= (self.difficulty + 1):
-            if int(list[self.difficulty_i]) >= (self.difficulty - 1):
+            if float(list[self.difficulty_i]) >= (self.difficulty - 1):
                 return True
         else:
             return False
