@@ -1,100 +1,62 @@
-from numpy import true_divide
 import pandas as pd
 
 def main():
     GamePicker().setup()
-    # get data
+    GamePicker().check_games()
 
 class GamePicker():
-    
+
     def __init__(self):
-        # self.data = None
-        self.data = pd.read_csv("cse310-module2/bgg_dataset.csv", skiprows=1, decimal='.')
-        self.games_available = []
-        self.age = 0
-        self.difficulty = 0
-        self.play_time = 0
-        self.player_count = 0
+        self.data = pd.read_csv("cse310-module2/bgg_dataset.csv", decimal='.')
+        self.age = 9999
+        self.play_time = 9999
+        self.player_count = 4
         self.rating = 0
-        self.numgames = 0
+        self.complexity = 0
 
-        self.name_i = 1
-        self.age_i = 6
-        self.min_players_i = 3
-        self.max_players_i = 4
-        self.play_time_i = 5
-        self.rating_i = 8
-        self.difficulty_i = 10
-
-        # [ '1Name','3Min Players', '4Max Players', '5Play Time', '6Min Age', '8Rating Average', '10Complexity Average', '12Mechanics']
+        self.name_i = 'name'
+        self.age_i = 'min_age'
+        self.min_players_i = 'min_players'
+        self.max_players_i = 'max_players'
+        self.play_time_i = 'play_time'
+        self.rating_i = 'user_rating'
+        self.complexity_i = 'complexity'
 
     def setup(self):    
-        # get input from user
-        print("Please enter the following values: ")
-        self.age = int(input("How old is the youngest person playing? "))
-        self.difficulty = float(input("How difficult do you want it to be (1-10)? "))
-        self.play_time = int(input("How much time do you have (in minutes)? "))
-        self.player_count = int(input("How many people will be playing? "))
-        self.rating = float(input("What's the lowest rating you would be okay with (1-10)? "))
-        print("Finding games that fit...")
         
-        self.check_games()
-
+        # display
+        print("\n\n=========================================\n\n")
+        print('\t~ BOARD GAME SELECTOR ~\n')
+        print("Please enter the following values: ")
+        
+        # get input from user
+        self.age = int(input("How old is the youngest person playing? "))
+        self.play_time = int(input("How much time do you have (in minutes)? "))
+        self.player_count = int(input("How many people want to play? "))
+        self.rating = float(input("What's the lowest user rating you would be okay with (1-10)? "))
+        self.complexity = float(input("What's the most complex you would want it to be?"))
+        print('\n\n')
+    
 
     def check_games(self):
-        lalala = self.data
-        print(lalala)
         
-        for i in self.data:
-            list = i.split(';')
+        # filters for each category- line of data at category index compared to user input
+        self.age_filt = (self.data[self.age_i] <= self.age)
+        self.play_time_filt = (self.data[self.play_time_i] <= self.play_time)
+        self.max_player_filt = (self.data[self.max_players_i] >= self.player_count)
+        self.min_player_filt = (self.data[self.min_players_i] <= self.player_count)
+        self.rating_filt = (self.data[self.rating_i] >= self.rating)
+        self.complexity_filt = ((self.data[self.complexity_i] <= (self.complexity + 1)) & (self.data[self.complexity_i] >= (self.complexity - 1)))
 
-            if (self.get_age(list)):
-                if self.get_difficulty(list):
-                    if self.get_play_time(list):
-                        if self.get_player_count(list):
-                            if self.get_rating(list):
-                                # print info
-                                print(list[0])
-                                # self.numgames += 1
+        # apply filters to dataframe
+        games_available = (self.data[self.age_filt & self.play_time_filt & self.max_player_filt & self.min_player_filt & self.complexity_filt])
 
+        names = (games_available['name'])
 
-    # function for each category
-    def get_age(self, list):
-        # list = list.split(';')
-        if int(list[self.age_i]) <= self.age:
-            return True
-        else:
-            return False
-    
-    def get_difficulty(self, list):
-        # list = list.split(';')
-        if float(list[self.difficulty_i]) <= (self.difficulty + 1):
-            if float(list[self.difficulty_i]) >= (self.difficulty - 1):
-                return True
-        else:
-            return False
-
-    def get_play_time(self, list):
-        # list = list.split(';')
-        if int(list[self.play_time_i]) <= self.play_time:
-            return True
-        else:
-            return False
-
-    def get_player_count(self, list):
-        # list = list.split(';')
-        if int(list[self.max_players_i]) >= self.player_count:
-            if int(list[self.min_players_i]) <= self.player_count:
-                return True
-        else:
-            return False
-
-    def get_rating(self, list):
-        # list = list.split(';')
-        if float(list[self.rating_i]) >= self.rating:
-            return True
-        else:
-            return False
+        # print user's top 5 game recommendations
+        print('Top 5 Recommendations:\n\nID #:\tName:\n')
+        print(names.head())
+        print("\n\n=========================================\n\n")
 
 if __name__ == '__main__':
     main()
