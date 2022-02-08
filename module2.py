@@ -1,21 +1,30 @@
 import pandas as pd
 
 def main():
+    # instatiate the class
     gp = GamePicker()
+
+    # start the program
     gp.setup()
     gp.check_games()
 
 class GamePicker():
 
     def __init__(self):
+        # get data
         self.data = pd.read_csv("cse310-module2/bgg_dataset.csv", decimal='.')
+
+        # variables for user preferences
         self.age = 0
         self.play_time = 9999
         self.player_count = 4
         self.rating = 0
         self.complexity = 0
+
+        # keep the complexity close to their entry
         self.complexity_high = self.complexity + 1
 
+        # column index values
         self.name_i = 'name'
         self.age_i = 'min_age'
         self.min_players_i = 'min_players'
@@ -24,9 +33,10 @@ class GamePicker():
         self.rating_i = 'user_rating'
         self.complexity_i = 'complexity'
 
+    # sets up the program by collecting all parameters for filtering the data
     def setup(self):    
         
-        # display
+        # display for user
         print("\n\n=========================================\n\n")
         print('\t~ BOARD GAME SELECTOR ~\n')
         print("Please enter the following values: ")
@@ -39,6 +49,7 @@ class GamePicker():
         self.complexity = float(input("How complex do you want it to be? "))
         print('\n\n')
 
+    # filters the data to find matches for the users preferences
     def check_games(self):
         
         # filters for each category- data column at category index compared to user input
@@ -47,23 +58,18 @@ class GamePicker():
         self.max_player_filt = self.data[self.max_players_i] >= self.player_count
         self.min_player_filt = self.data[self.min_players_i] <= self.player_count
         self.rating_filt = self.data[self.rating_i] >= self.rating
+
+        # two filters for complexity to keep it close above and below
         self.complexity_high_filt = self.data[self.complexity_i] >= (self.complexity - 0.1)
         self.complexity_low_filt = (self.data[self.complexity_i] <= self.complexity_high)
-        # self.all_filt = (self.data['min_age'] <= self.age) & (self.data[self.play_time_i] <= self.play_time) & (self.data[self.max_players_i] >= self.player_count) & (self.data[self.min_players_i] <= self.player_count) & (self.data[self.rating_i] >= self.rating) & (self.data[self.complexity_i].between(self.complexity, self.complexity_high))
         
         # apply filters to dataframe
         games_available = self.data[self.age_filt & self.play_time_filt & self.max_player_filt & self.min_player_filt & self.rating_filt & self.complexity_high_filt]
-        # self.data = self.data[self.play_time_filt]
-        # self.data = self.data[self.max_player_filt]
-        # self.data = self.data[self.min_player_filt]
-        # self.data = self.data[self.rating_filt]
-        # self.data = self.data[self.complexity_filt]
-        # self.data = self.data[self.age_filt]
 
-
+        # choose which columns to display
         display_info = games_available[['name', 'min_players', 'max_players', 'user_rating', 'play_time', 'complexity']]
 
-        # print user's top 5 game recommendations
+        # print user's top 5 game recommendations and their info
         print('Top 5 Recommendations:\n\n')
         print(display_info.head())
         print("\n\n=========================================\n\n")
