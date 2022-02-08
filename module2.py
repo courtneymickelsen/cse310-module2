@@ -51,7 +51,7 @@ class GamePicker():
 
     # filters the data to find matches for the users preferences
     def check_games(self):
-        
+
         # filters for each category- data column at category index compared to user input
         self.age_filt = self.data[self.age_i] <= self.age
         self.play_time_filt = self.data[self.play_time_i] <= self.play_time
