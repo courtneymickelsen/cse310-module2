@@ -34,7 +34,7 @@ class GamePicker():
         self.play_time = int(input("How much time do you have (in minutes)? "))
         self.player_count = int(input("How many people want to play? "))
         self.rating = float(input("What's the lowest user rating you would be okay with (1-10)? "))
-        self.complexity = float(input("What's the most complex you would want it to be?"))
+        self.complexity = float(input("What's the most complex you would want it to be? "))
         print('\n\n')
     
 
